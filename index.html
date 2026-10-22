@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Wordly</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <header>
+             <h1>Wordly</h1>
+            <p>Welcome to Wordly!
+            Online Learning Platform</p>
+        </header>
+        <main>
+           <form id="search-form" role="search">
+                <label for="word-input" class="visually-hidden">Search</label>
+                <input
+                    type="text"
+                    id="word-input"
+                    placeholder="Enter a word"
+                    aria-label="Word to search"
+                    autocomplete="off"
+                />
+                <button type="submit">Search</button>
+             </form>
+            <p id="error-message" class="error-message" aria-live="polite"></p>
+        
+            <section id="results" aria-live="polite" aria-label="Search results"></section>
+
+        </main>
+    </body>
+</html>
