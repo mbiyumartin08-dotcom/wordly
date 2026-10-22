@@ -107,3 +107,49 @@ button:hover {
 .save-btn.saved {
   background: #f59e0b;
 }
+
+header {
+  position: relative;
+}
+
+#theme-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--card);
+  border: 1px solid var(--accent);
+}
+
+.word-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+#saved-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.saved-chip {
+  display: flex;
+  background: var(--card);
+  border: 1px solid #f59e0b;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.saved-chip button {
+  background: none;
+  color: var(--text);
+  padding: 0.3rem 0.8rem;
+  border-radius: 0;
+}
+
+.saved-chip button:hover {
+  background: #f59e0b;
+}

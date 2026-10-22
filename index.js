@@ -42,7 +42,6 @@ async function getWord(word) {
 }
 
 
-
 function el(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -70,9 +69,15 @@ function displayWord(entry) {
   } else {
     header.appendChild(el("span", "phonetic", "(no audio available)"));
   }
+  
+  const saveBtn = el("button", "save-btn");
+  saveBtn.type = "button";
+  saveBtn.dataset.word = entry.word.toLowerCase();
+  saveBtn.addEventListener("click", () => toggleSave(entry.word));
+  header.appendChild(saveBtn);
+
   results.appendChild(header);
 
-  // One card per meaning (noun, verb, ...)
   entry.meanings.forEach((meaning) => {
     results.appendChild(buildMeaningCard(meaning));
   });
@@ -86,6 +91,8 @@ function displayWord(entry) {
     source.appendChild(link);
     results.appendChild(source);
   }
+  
+  refreshSaveButton(); 
 }
 
 function buildMeaningCard(meaning) {
@@ -103,7 +110,8 @@ function buildMeaningCard(meaning) {
   card.appendChild(list);
 
   const synonyms = el("div", "synonyms");
-  if (meaning.synonyms.length > 0) {
+
+  if (meaning.synonyms && meaning.synonyms.length > 0) {
     synonyms.appendChild(el("strong", "", "Synonyms: "));
     meaning.synonyms.forEach((s) => {
       synonyms.appendChild(el("span", "synonym-tag", s));
@@ -120,3 +128,70 @@ function showMessage(text, isError = true) {
   message.textContent = text;
   message.className = isError ? "error" : "";
 }
+
+/* ---------- Saved words ---------- */
+const savedList = document.getElementById("saved-list");
+let savedWords = loadSaved();
+
+function loadSaved() {
+  try {
+    return JSON.parse(localStorage.getItem("wordlySaved")) || [];
+  } catch {
+    return [];
+  }
+}
+
+function toggleSave(word) {
+  const w = word.toLowerCase();
+
+  if (savedWords.includes(w)) {
+    savedWords = savedWords.filter((s) => s !== w); // remove it
+  } else {
+    savedWords.push(w); // add it
+  }
+
+  localStorage.setItem("wordlySaved", JSON.stringify(savedWords));
+  renderSaved();
+  refreshSaveButton();
+}
+
+function refreshSaveButton() {
+  const btn = document.querySelector(".save-btn");
+  if (!btn) return;
+
+  const isSaved = savedWords.includes(btn.dataset.word);
+  btn.classList.toggle("saved", isSaved);
+  btn.textContent = isSaved ? "★ Saved" : "☆ Save";
+  btn.setAttribute("aria-pressed", isSaved);
+}
+
+function renderSaved() {
+  savedList.innerHTML = "";
+
+  if (savedWords.length === 0) {
+    savedList.appendChild(el("li", "", "No saved words yet."));
+    return;
+  }
+
+  savedWords.forEach((w) => {
+    const chip = el("li", "saved-chip");
+
+    const lookup = el("button", "", w);
+    lookup.type = "button";
+    lookup.addEventListener("click", () => {
+      input.value = w;
+      getWord(w);
+    });
+
+    const remove = el("button", "", "×");
+    remove.type = "button";
+    remove.setAttribute("aria-label", `Remove ${w} from saved words`);
+    remove.addEventListener("click", () => toggleSave(w));
+
+    chip.append(lookup, remove);
+    savedList.appendChild(chip);
+  });
+}
+
+
+renderSaved();
